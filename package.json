@@ -6,6 +6,7 @@
     "@material-ui/core": "^3.9.2",
     "axios": "^0.18.0",
     "dayjs": "^1.8.11",
+    "jwt-decode": "^2.2.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-router-dom": "^5.0.0",
