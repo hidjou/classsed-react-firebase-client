@@ -6,7 +6,7 @@ Add https://europe-west1-socialape-d081e.cloudfunctions.net/api as the 'proxy' v
 
 ## 2: Install packages
 
-run `npm instll`
+run `npm install`
 
 ## 3: Run project
 
