@@ -6,18 +6,18 @@ import PropTypes from 'prop-types';
 const AuthRoute = ({ component: Component, authenticated, ...rest }) => (
   <Route
     {...rest}
-    render={(props) =>
-      authenticated === true ? <Redirect to="/" /> : <Component {...props} />
-    }
+    render={(props) => authenticated === true ? <Redirect to='/' /> : <Component {...props} />}
   />
-);
+)
 
-const mapStateToProps = (state) => ({
-  authenticated: state.user.authenticated
-});
-
+// PropTypes  
 AuthRoute.propTypes = {
   user: PropTypes.object
 };
+
+// Pull state from Redux Store To Component
+const mapStateToProps = (state) => ({
+  authenticated: state.user.authenticated
+})
 
 export default connect(mapStateToProps)(AuthRoute);

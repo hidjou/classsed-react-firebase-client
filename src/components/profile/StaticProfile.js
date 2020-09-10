@@ -1,3 +1,4 @@
+// Dependancies
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -7,20 +8,22 @@ import { Link } from 'react-router-dom';
 import MuiLink from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import { global__theme, profile__theme } from '../../util/theme';
 // Icons
 import LocationOn from '@material-ui/icons/LocationOn';
 import LinkIcon from '@material-ui/icons/Link';
 import CalendarToday from '@material-ui/icons/CalendarToday';
 
-const styles = (theme) => ({
-  ...theme
-});
+const styles ={
+  ...global__theme,
+  ...profile__theme
+};
 
 const StaticProfile = (props) => {
   const {
     classes,
     profile: { handle, createdAt, imageUrl, bio, website, location }
-  } = props;
+  } = props; 
 
   return (
     <Paper className={classes.paper}>
@@ -65,6 +68,7 @@ const StaticProfile = (props) => {
   );
 };
 
+// PropTypes
 StaticProfile.propTypes = {
   profile: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired
