@@ -1,5 +1,6 @@
+// Dependancies
 import React from 'react';
-
+// MUI stuff
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 

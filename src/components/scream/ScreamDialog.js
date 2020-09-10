@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import MyButton from '../../util/MyButton';
@@ -7,7 +7,11 @@ import Comments from './Comments';
 import CommentForm from './CommentForm';
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
+// Redux stuff
+import { connect } from 'react-redux';
+import { getScream, clearErrors } from '../../redux/actions/dataActions';
 // MUI Stuff
+import { global__theme, scream__dialog__theme } from './../../util/theme';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -17,88 +21,60 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import UnfoldMore from '@material-ui/icons/UnfoldMore';
 import ChatIcon from '@material-ui/icons/Chat';
-// Redux stuff
-import { connect } from 'react-redux';
-import { getScream, clearErrors } from '../../redux/actions/dataActions';
 
-const styles = (theme) => ({
-  ...theme,
-  profileImage: {
-    maxWidth: 200,
-    height: 200,
-    borderRadius: '50%',
-    objectFit: 'cover'
-  },
-  dialogContent: {
-    padding: 20
-  },
-  closeButton: {
-    position: 'absolute',
-    left: '90%'
-  },
-  expandButton: {
-    position: 'absolute',
-    left: '90%'
-  },
-  spinnerDiv: {
-    textAlign: 'center',
-    marginTop: 50,
-    marginBottom: 50
-  }
-});
 
-class ScreamDialog extends Component {
-  state = {
-    open: false,
-    oldPath: '',
-    newPath: ''
-  };
-  componentDidMount() {
-    if (this.props.openDialog) {
-      this.handleOpen();
-    }
-  }
-  handleOpen = () => {
+const styles = {
+  ...global__theme,
+  ...scream__dialog__theme
+};
+
+const ScreamDialog = (props) => {
+
+  const {
+    classes,
+    scream: { screamId, body, createdAt, likeCount, commentCount, userImage, userHandle, comments },
+    UI: { loading },
+    getScream,
+    clearErrors
+  } = props;
+
+  const [open, setOpen] = useState(false);
+  const [oldPath, setOldPath] = useState('');
+  const [newPath, setNewPath] = useState('');
+
+  useEffect(() => {
+    if (props.openDialog) handleOpen();
+  }, [props.openDialog]);
+
+  const handleOpen = () => {
     let oldPath = window.location.pathname;
 
-    const { userHandle, screamId } = this.props;
+    const { userHandle, screamId } = props;
     const newPath = `/users/${userHandle}/scream/${screamId}`;
 
     if (oldPath === newPath) oldPath = `/users/${userHandle}`;
 
     window.history.pushState(null, null, newPath);
-
-    this.setState({ open: true, oldPath, newPath });
-    this.props.getScream(this.props.screamId);
-  };
-  handleClose = () => {
-    window.history.pushState(null, null, this.state.oldPath);
-    this.setState({ open: false });
-    this.props.clearErrors();
+    setOpen(true);
+    setOldPath(oldPath);
+    setNewPath(newPath);
+    getScream(screamId);
   };
 
-  render() {
-    const {
-      classes,
-      scream: {
-        screamId,
-        body,
-        createdAt,
-        likeCount,
-        commentCount,
-        userImage,
-        userHandle,
-        comments
-      },
-      UI: { loading }
-    } = this.props;
+  const handleClose = () => {
+    window.history.pushState(null, null, oldPath);
+    setOpen(false);
+    clearErrors();
+  };
 
-    const dialogMarkup = loading ? (
-      <div className={classes.spinnerDiv}>
-        <CircularProgress size={200} thickness={2} />
-      </div>
-    ) : (
-      <Grid container spacing={16}>
+
+
+  const dialogMarkup = loading ? (
+    <div className={classes.spinnerDiv}>
+      <CircularProgress size={200} thickness={2} />
+    </div>
+  ) : (
+      <Grid container spacing={2} >
         <Grid item sm={5}>
           <img src={userImage} alt="Profile" className={classes.profileImage} />
         </Grid>
@@ -129,37 +105,37 @@ class ScreamDialog extends Component {
         <Comments comments={comments} />
       </Grid>
     );
-    return (
-      <Fragment>
+  return (
+    <Fragment>
+      <MyButton
+        onClick={handleOpen}
+        tip="Expand scream"
+        tipClassName={classes.expandButton}
+      >
+        <UnfoldMore color="primary" />
+      </MyButton>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullWidth
+        maxWidth="sm"
+      >
         <MyButton
-          onClick={this.handleOpen}
-          tip="Expand scream"
-          tipClassName={classes.expandButton}
+          tip="Close"
+          onClick={handleClose}
+          tipClassName={classes.closeButton}
         >
-          <UnfoldMore color="primary" />
+          <CloseIcon />
         </MyButton>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          fullWidth
-          maxWidth="sm"
-        >
-          <MyButton
-            tip="Close"
-            onClick={this.handleClose}
-            tipClassName={classes.closeButton}
-          >
-            <CloseIcon />
-          </MyButton>
-          <DialogContent className={classes.dialogContent}>
-            {dialogMarkup}
-          </DialogContent>
-        </Dialog>
-      </Fragment>
-    );
-  }
+        <DialogContent className={classes.dialogContent}>
+          {dialogMarkup}
+        </DialogContent>
+      </Dialog>
+    </Fragment>
+  );
 }
 
+// PropTypes
 ScreamDialog.propTypes = {
   clearErrors: PropTypes.func.isRequired,
   getScream: PropTypes.func.isRequired,
@@ -169,11 +145,13 @@ ScreamDialog.propTypes = {
   UI: PropTypes.object.isRequired
 };
 
+// Pull state from Redux Store To Component
 const mapStateToProps = (state) => ({
   scream: state.data.scream,
   UI: state.UI
 });
 
+// Push Actions To Props
 const mapActionsToProps = {
   getScream,
   clearErrors
