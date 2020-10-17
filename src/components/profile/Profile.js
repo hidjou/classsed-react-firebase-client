@@ -16,7 +16,7 @@ import LocationOn from '@material-ui/icons/LocationOn';
 import LinkIcon from '@material-ui/icons/Link';
 import CalendarToday from '@material-ui/icons/CalendarToday';
 import EditIcon from '@material-ui/icons/Edit';
-import KeyboardReturn from '@material-ui/icons/KeyboardReturn';
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
 //Redux
 import { connect } from 'react-redux';
 import { logoutUser, uploadImage } from '../../redux/actions/userActions';
