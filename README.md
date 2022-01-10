@@ -15,3 +15,11 @@ run `npm start`
 ## 4: Open it
 
 go to [http://localhost:3000](http://localhost:3000)
+
+
+
+
+
+< a href="https://heroku.com/deploy?template=https://github.com/hidjou/classsed-react-firebase-client/">
+< img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
+< /a>
